@@ -20,7 +20,7 @@ export class EditCourseDialogComponent {
 
   mode: 'create' | 'update';
 
-  loading$:Observable<boolean>;
+  loading$: Observable<boolean>;
 
   constructor(
     private fb: FormBuilder,
@@ -42,8 +42,7 @@ export class EditCourseDialogComponent {
     if (this.mode == 'update') {
       this.form = this.fb.group(formControls);
       this.form.patchValue({...data.course});
-    }
-    else if (this.mode == 'create') {
+    } else if (this.mode == 'create') {
       this.form = this.fb.group({
         ...formControls,
         url: ['', Validators.required],
@@ -66,7 +65,7 @@ export class EditCourseDialogComponent {
     this.coursesService.saveCourse(course.id, course)
       .subscribe(
         () => this.dialogRef.close()
-      )
+      );
 
 
   }

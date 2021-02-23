@@ -30,7 +30,7 @@ export class CourseComponent implements OnInit {
 
   ngOnInit() {
 
-    const courseUrl = this.route.snapshot.paramMap.get("courseUrl");
+    const courseUrl = this.route.snapshot.paramMap.get('courseUrl');
 
     this.course$ = this.coursesService.findCourseByUrl(courseUrl);
 

@@ -24,6 +24,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {CoursesResolver} from './services/courser.resolver';
 import {EffectsModule} from '@ngrx/effects';
 import {CoursesEffects} from './store/effects/courses.effects';
+import {StoreModule} from '@ngrx/store';
+import {coursesReducer} from './store/reducers/courses.reducers';
 
 
 export const coursesRoutes: Routes = [
@@ -60,7 +62,8 @@ export const coursesRoutes: Routes = [
     MatMomentDateModule,
     ReactiveFormsModule,
     RouterModule.forChild(coursesRoutes),
-    EffectsModule.forFeature([CoursesEffects])
+    EffectsModule.forFeature([CoursesEffects]),
+    StoreModule.forFeature('courses', coursesReducer)
   ],
   declarations: [
     HomeComponent,

@@ -19,6 +19,7 @@ import {environment} from '../environments/environment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {reducers} from './store/reducers';
 import {AuthGuard} from './auth/guards/auth.guard';
+import {EffectsModule} from '@ngrx/effects';
 
 
 const routes: Routes = [
@@ -52,7 +53,8 @@ const routes: Routes = [
     MatToolbarModule,
     AuthModule.forRoot(),
     StoreModule.forRoot(reducers),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    EffectsModule.forRoot([])
   ],
   bootstrap: [AppComponent]
 })

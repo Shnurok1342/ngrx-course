@@ -5,7 +5,7 @@ import {AuthService} from '../auth.service';
 import {tap} from 'rxjs/operators';
 import {noop} from 'rxjs';
 import {Router} from '@angular/router';
-import { AppState } from '../store/reducers';
+import { AuthState } from '../store/reducers';
 import {AuthActions} from '../store/actions/action-types';
 
 @Component({
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
       private fb: FormBuilder,
       private auth: AuthService,
       private router: Router,
-      private store: Store<AppState>
+      private store: Store<AuthState>
   ) {
 
       this.form = fb.group({

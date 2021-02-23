@@ -6,10 +6,10 @@ import {
   MetaReducer
 } from '@ngrx/store';
 
-export interface State {
+export interface AppState {
 
 }
 
-export const reducers: ActionReducerMap<State> = {
+export const reducers: ActionReducerMap<AppState> = {
 
 };

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {compareCourses, Course} from '../model/course';
-import {Observable} from "rxjs";
+import {Observable} from 'rxjs';
 import {defaultDialogConfig} from '../shared/default-dialog-config';
 import {EditCourseDialogComponent} from '../edit-course-dialog/edit-course-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ import {CoursesHttpService} from '../services/courses-http.service';
 
 
 @Component({
-    selector: 'home',
+    selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
@@ -47,13 +47,13 @@ export class HomeComponent implements OnInit {
 
     this.beginnerCourses$ = courses$
       .pipe(
-        map(courses => courses.filter(course => course.category == 'BEGINNER'))
+        map(courses => courses.filter(course => course.category === 'BEGINNER'))
       );
 
 
     this.advancedCourses$ = courses$
       .pipe(
-        map(courses => courses.filter(course => course.category == 'ADVANCED'))
+        map(courses => courses.filter(course => course.category === 'ADVANCED'))
       );
 
     this.promoTotal$ = courses$
@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit {
     const dialogConfig = defaultDialogConfig();
 
     dialogConfig.data = {
-      dialogTitle:"Create Course",
+      dialogTitle: 'Create Course',
       mode: 'create'
     };
 

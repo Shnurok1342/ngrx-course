@@ -39,35 +39,35 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        AppComponent
+      AppComponent
     ],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
-        HttpClientModule,
-        MatMenuModule,
-        MatIconModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        MatListModule,
-        MatToolbarModule,
-        AuthModule.forRoot(),
-        StoreModule.forRoot(reducers, {
-            metaReducers,
-            runtimeChecks : {
-                strictStateImmutability: true,
-                strictActionImmutability: true,
-                strictActionSerializability: true,
-                strictStateSerializability:true
-            }
-        }),
-        StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
-        EffectsModule.forRoot([]),
-        StoreRouterConnectingModule.forRoot({
-            stateKey: 'router',
-            routerState: RouterState.Minimal
-        })
+      BrowserModule,
+      BrowserAnimationsModule,
+      RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+      HttpClientModule,
+      MatMenuModule,
+      MatIconModule,
+      MatSidenavModule,
+      MatProgressSpinnerModule,
+      MatListModule,
+      MatToolbarModule,
+      AuthModule.forRoot(),
+      StoreModule.forRoot(reducers, {
+          metaReducers,
+          runtimeChecks : {
+              strictStateImmutability: true,
+              strictActionImmutability: true,
+              strictActionSerializability: true,
+              strictStateSerializability: true
+          }
+      }),
+      StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
+      EffectsModule.forRoot([]),
+      StoreRouterConnectingModule.forRoot({
+          stateKey: 'router',
+          routerState: RouterState.Minimal
+      })
     ],
     bootstrap: [AppComponent]
 })

@@ -1,7 +1,6 @@
 import {compareCourses, Course} from '../../model/course';
 import {createEntityAdapter, EntityState} from '@ngrx/entity';
-import {createReducer, on} from '@ngrx/store';
-import {CoursesActions} from '../actions/action-types';
+import {CourseActions, CourseActionTypes} from '../actions/course.actions';
 
 export interface CoursesState extends EntityState<Course> {
   allCoursesLoaded: boolean;
@@ -14,16 +13,27 @@ export const initialCoursesState = adapter.getInitialState({
   allCoursesLoaded: false
 });
 
-export const coursesReducer = createReducer(
-  initialCoursesState,
-  on(CoursesActions.allCoursesLoaded,
-    (state, action) => adapter.addAll(
-      action.courses,
-      { ...state, allCoursesLoaded: true }
-    )),
-  on(CoursesActions.courseUpdated,
-    (state, action) => adapter.updateOne(
-      action.update,
-      state
-    ))
-);
+export function coursesReducer(state = initialCoursesState , action: CourseActions): CoursesState {
+
+  switch (action.type) {
+    case CourseActionTypes.CourseLoaded:
+      return adapter.addOne(action.payload.course, state);
+
+    case CourseActionTypes.AllCoursesLoaded:
+      return adapter.addAll(action.payload.courses, {...state, allCoursesLoaded: true});
+
+    case CourseActionTypes.CourseUpdated:
+      return adapter.updateOne(action.payload.update, state);
+
+    default: {
+      return state;
+    }
+  }
+}
+
+export const {
+  selectAll,
+  selectEntities,
+  selectIds,
+  selectTotal
+} = adapter.getSelectors();

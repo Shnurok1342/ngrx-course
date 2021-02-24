@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {AuthService} from '../auth.service';
@@ -6,10 +6,10 @@ import {tap} from 'rxjs/operators';
 import {noop} from 'rxjs';
 import {Router} from '@angular/router';
 import { AuthState } from '../store/reducers';
-import {AuthActions} from '../store/actions/action-types';
+import {Login} from '../store/actions/auth.actions';
 
 @Component({
-  selector: 'login',
+  selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     this.auth.login(formVal.email, formVal.password)
       .pipe(
         tap(user => {
-          this.store.dispatch(AuthActions.login({ user }));
+          this.store.dispatch(new Login({ user }));
           this.router.navigateByUrl('/courses');
         })
       )
@@ -52,4 +52,3 @@ export class LoginComponent implements OnInit {
   }
 
 }
-

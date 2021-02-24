@@ -4,8 +4,7 @@ import {Observable} from 'rxjs';
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
 import {AppState} from './store/reducers';
 import {isLoggedIn, isLoggedOut} from './auth/store/selectors/auth-selectors';
-import {AuthActions} from './auth/store/actions/action-types';
-import {login} from './auth/store/actions/auth.actions';
+import {Login, Logout} from './auth/store/actions/auth.actions';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit {
     ngOnInit() {
       const userProfile = localStorage.getItem('user');
       if (userProfile) {
-        this.store.dispatch(login({ user: JSON.parse(userProfile) }));
+        this.store.dispatch(new Login({ user: JSON.parse(userProfile) }));
       }
 
       this.router.events.subscribe(event  => {
@@ -52,7 +51,7 @@ export class AppComponent implements OnInit {
     }
 
     logout() {
-      this.store.dispatch(AuthActions.logout());
+      this.store.dispatch(new Logout());
     }
 
 }

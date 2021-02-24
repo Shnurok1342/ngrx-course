@@ -4,8 +4,8 @@ import {Observable} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../store/reducers';
 import {filter, finalize, first, tap} from 'rxjs/operators';
-import {CoursesActions} from '../store/actions/action-types';
 import {areCoursesLoaded} from '../store/selectors/courses.selectors';
+import {LoadAllCourses} from '../store/actions/course.actions';
 
 @Injectable()
 export class CoursesResolver implements Resolve<any> {
@@ -21,7 +21,7 @@ export class CoursesResolver implements Resolve<any> {
         tap(coursesLoaded => {
           if (!this.loading && !coursesLoaded) {
             this.loading = true;
-            this.store.dispatch(CoursesActions.loadAllCourses());
+            this.store.dispatch(new LoadAllCourses());
           }
         }),
         filter(Boolean),

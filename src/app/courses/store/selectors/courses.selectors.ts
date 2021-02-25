@@ -1,7 +1,11 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {adapter, CoursesState} from '../reducers/courses.reducers';
+import {LessonsState} from '../reducers/lessons.reducers';
+import * as fromLesson from '../reducers/lessons.reducers';
 
 export const selectCoursesState = createFeatureSelector<CoursesState>('courses');
+
+export const selectLessonsState = createFeatureSelector<LessonsState>('lessons');
 
 export const selectAllCourses = createSelector(
   selectCoursesState,
@@ -26,4 +30,9 @@ export const selectPromoTotal = createSelector(
 export const areCoursesLoaded = createSelector(
   selectCoursesState,
   state => state.allCoursesLoaded
+);
+
+export const selectAllLessons = createSelector(
+  selectLessonsState,
+  fromLesson.selectAll
 );

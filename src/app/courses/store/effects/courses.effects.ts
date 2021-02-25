@@ -6,8 +6,11 @@ import {
   AllCoursesLoaded,
   CourseActionTypes,
   CourseLoaded,
-  CourseRequested, CourseSaved,
+  CourseRequested,
+  CourseSaved,
   CourseUpdated,
+  LessonsPageLoaded,
+  LessonsPageRequested,
   LoadAllCourses
 } from '../actions/course.actions';
 
@@ -37,6 +40,17 @@ export class CoursesEffects {
       action.payload.update.changes
     )),
     map(course => new CourseSaved({ course: { id: course.id, changes: course } }))
+  );
+
+  @Effect()
+  loadLessonsPage$ = this.actions$.pipe(
+    ofType<LessonsPageRequested>(CourseActionTypes.LessonsPageRequested),
+    concatMap(action => this.coursesHttpService.findLessons(
+      action.payload.courseId,
+      action.payload.page.pageIndex,
+      action.payload.page.pageSize
+    )),
+    map(lessons => new LessonsPageLoaded({lessons}))
   );
 
   constructor(

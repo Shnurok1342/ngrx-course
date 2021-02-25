@@ -14,15 +14,10 @@ import {CourseUpdated} from '../store/actions/course.actions';
   styleUrls: ['./edit-course-dialog.component.css']
 })
 export class EditCourseDialogComponent {
-
   form: FormGroup;
-
   dialogTitle: string;
-
   course: Course;
-
   mode: 'create' | 'update';
-
   loading$: Observable<boolean>;
 
   constructor(
@@ -59,13 +54,10 @@ export class EditCourseDialogComponent {
   }
 
   onSave() {
-    const course: Course = {
-      ...this.course,
-      ...this.form.value
-    };
+    const changes: Course = { ...this.form.value };
     const update: Update<Course> = {
-      id: course.id,
-      changes: course
+      id: this.course.id,
+      changes
     };
     this.store.dispatch(new CourseUpdated({update}));
     this.dialogRef.close();

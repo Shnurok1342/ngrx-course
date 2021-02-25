@@ -26,6 +26,7 @@ import {EffectsModule} from '@ngrx/effects';
 import {CoursesEffects} from './store/effects/courses.effects';
 import {StoreModule} from '@ngrx/store';
 import {coursesReducer} from './store/reducers/courses.reducers';
+import {lessonsReducer} from './store/reducers/lessons.reducers';
 
 
 export const coursesRoutes: Routes = [
@@ -63,7 +64,8 @@ export const coursesRoutes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(coursesRoutes),
     EffectsModule.forFeature([CoursesEffects]),
-    StoreModule.forFeature('courses', coursesReducer)
+    StoreModule.forFeature('courses', coursesReducer),
+    StoreModule.forFeature('lessons', lessonsReducer)
   ],
   declarations: [
     HomeComponent,

@@ -1,19 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Course} from '../model/course';
-import {combineLatest, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {Lesson} from '../model/lesson';
-import {map, take, withLatestFrom} from 'rxjs/operators';
+import {delay, map} from 'rxjs/operators';
 import {CoursesHttpService} from '../services/courses-http.service';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../store/reducers';
 import {
   selectAllCourses,
-  selectAllLessons,
-  selectLessonPageIndex,
-  selectLessonPageSize,
+  selectAllLessons, selectLessonsLoading
 } from '../store/selectors/courses.selectors';
-import {LessonsPageRequested, UpdateLessonPageIndex} from '../store/actions/course.actions';
+import {LessonsPageRequested} from '../store/actions/course.actions';
 
 @Component({
   selector: 'app-course',
@@ -23,8 +21,9 @@ import {LessonsPageRequested, UpdateLessonPageIndex} from '../store/actions/cour
 export class CourseComponent implements OnInit {
   course$: Observable<Course>;
   lessons$: Observable<Lesson[]>;
-  pageIndex$: Observable<number>;
-  pageSize$: Observable<number>;
+  loading$: Observable<boolean>;
+  pageIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  pageSize$: BehaviorSubject<number> = new BehaviorSubject<number>(3);
   displayedColumns = ['seqNo', 'description', 'duration'];
 
   constructor(
@@ -39,15 +38,15 @@ export class CourseComponent implements OnInit {
       select(selectAllCourses),
       map(courses => courses.find(c => c.url === courseUrl)),
     );
-    this.pageIndex$ = this.store.select(selectLessonPageIndex);
-    this.pageSize$ = this.store.select(selectLessonPageSize);
+    this.loading$ = this.store.select(selectLessonsLoading).pipe(delay(0));
 
     this.lessons$ = combineLatest(
+      this.course$,
+      this.store.select(selectAllLessons),
       this.pageIndex$,
-      this.store.select(selectAllLessons)
+      this.pageSize$,
     ).pipe(
-      withLatestFrom(this.pageSize$, this.course$),
-      map(([[pageIndex, allLessons], pageSize, course]) => {
+      map(([course, allLessons, pageIndex, pageSize]) => {
         const start = pageIndex * pageSize;
         const end = start + pageSize;
 
@@ -65,21 +64,17 @@ export class CourseComponent implements OnInit {
   }
 
   loadNextPage(): void {
-    this.pageIndex$
-      .pipe(take(1))
-      .subscribe(i => this.updateLessonPageIndex(i + 1));
+    const currentPageIndex = this.pageIndex$.getValue();
+    this.updateLessonPageIndex(currentPageIndex + 1);
   }
 
   loadPreviousPage(): void {
-    this.pageIndex$
-      .pipe(take(1))
-      .subscribe(i => {
-        const newPageIndex = i > 0 ? i - 1 : 0;
-        this.updateLessonPageIndex(newPageIndex);
-      });
+    const currentPageIndex = this.pageIndex$.getValue();
+    const newPageIndex = currentPageIndex > 0 ? currentPageIndex - 1 : 0;
+    this.updateLessonPageIndex(newPageIndex);
   }
 
   updateLessonPageIndex(pageIndex: number): void {
-    this.store.dispatch(new UpdateLessonPageIndex({ pageIndex }));
+    this.pageIndex$.next(pageIndex);
   }
 }

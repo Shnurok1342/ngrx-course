@@ -3,23 +3,22 @@ import {compareLessons, Lesson} from '../../model/lesson';
 import {CourseActions, CourseActionTypes} from '../actions/course.actions';
 
 export interface LessonsState extends EntityState<Lesson> {
-  pageIndex: number;
-  pageSize: number;
+  loading: boolean;
 }
 
 export const adapter = createEntityAdapter<Lesson>({
   sortComparer: compareLessons,
 });
 
-export const initialLessonsState = adapter.getInitialState({ pageIndex: 0, pageSize: 3 });
+export const initialLessonsState = adapter.getInitialState({ pageIndex: 0, pageSize: 3, loading: false });
 
 export function lessonsReducer(state = initialLessonsState, action: CourseActions): LessonsState {
   switch (action.type) {
-    case CourseActionTypes.LessonsPageLoaded:
-      return adapter.addMany(action.payload.lessons, state);
+    case CourseActionTypes.LessonsPageRequested:
+      return { ...state, loading: true };
 
-    case CourseActionTypes.UpdateLessonPageIndex:
-      return { ...state, pageIndex: action.payload.pageIndex };
+    case CourseActionTypes.LessonsPageLoaded:
+      return adapter.addMany(action.payload.lessons, {...state, loading: false});
 
     default:
       return state;

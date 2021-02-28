@@ -34,14 +34,9 @@ export const areCoursesLoaded = createSelector(
   state => state.allCoursesLoaded
 );
 
-export const selectLessonPageIndex = createSelector(
+export const selectLessonsLoading = createSelector(
   selectLessonsState,
-  state => state.pageIndex
-);
-
-export const selectLessonPageSize = createSelector(
-  selectLessonsState,
-  state => state.pageSize
+  state => state.loading
 );
 
 export const selectAllLessons = createSelector(

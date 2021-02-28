@@ -49,7 +49,7 @@ export class CourseComponent implements OnInit {
         this.store.pipe(
           select(selectLessonsPage, { courseId, page: {pageIndex, pageSize} }),
           tap(lessons => {
-            if (lessons?.length < pageSize) {
+            if (!lessons?.length) {
               this.store.dispatch(new LessonsPageRequested({ courseId, page: {pageIndex, pageSize} }));
             }
           })

@@ -10,6 +10,7 @@ export enum CourseActionTypes {
   AllCoursesLoaded = '[Courses API] All Courses Loaded',
   CourseUpdated = '[Edit Course Dialog] Course Updated',
   CourseSaved = '[Courses API] Course Saved',
+  UpdateLessonPageIndex = '[Lessons List Pagination] Change Lessons Page Index',
   LessonsPageRequested = '[Course Landing Page] Lessons Page Requested',
   LessonsPageLoaded = '[Courses API] Lessons Page Loaded',
   LessonsPageCancelled = '[Courses API] Lessons Page Cancelled'
@@ -28,6 +29,11 @@ export class LessonsPageRequested implements Action {
 export class LessonsPageLoaded implements Action {
   readonly type = CourseActionTypes.LessonsPageLoaded;
   constructor(public payload: {lessons: Lesson[]}) {}
+}
+
+export class UpdateLessonPageIndex implements Action {
+  readonly type = CourseActionTypes.UpdateLessonPageIndex;
+  constructor(public payload: { pageIndex: number }) {}
 }
 
 export class LessonsPageCancelled implements Action {
@@ -72,4 +78,5 @@ export type CourseActions =
   | CourseSaved
   | LessonsPageRequested
   | LessonsPageLoaded
-  | LessonsPageCancelled;
+  | LessonsPageCancelled
+  | UpdateLessonPageIndex;

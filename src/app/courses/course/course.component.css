@@ -54,3 +54,14 @@ h2 {
 .spinner-container {
   width:390px;
 }
+
+.lesson-pagination {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.lesson-pagination button {
+  margin-right: 5px;
+  margin-left: 5px;
+}

@@ -1,14 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Course} from '../model/course';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {Lesson} from '../model/lesson';
-import {map, tap, withLatestFrom} from 'rxjs/operators';
+import {map, take, withLatestFrom} from 'rxjs/operators';
 import {CoursesHttpService} from '../services/courses-http.service';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../store/reducers';
-import {selectAllCourses, selectAllLessons} from '../store/selectors/courses.selectors';
-import {LessonsPageRequested, PageQuery} from '../store/actions/course.actions';
+import {
+  selectAllCourses,
+  selectAllLessons,
+  selectLessonPageIndex,
+  selectLessonPageSize,
+} from '../store/selectors/courses.selectors';
+import {LessonsPageRequested, UpdateLessonPageIndex} from '../store/actions/course.actions';
 
 @Component({
   selector: 'app-course',
@@ -18,8 +23,9 @@ import {LessonsPageRequested, PageQuery} from '../store/actions/course.actions';
 export class CourseComponent implements OnInit {
   course$: Observable<Course>;
   lessons$: Observable<Lesson[]>;
+  pageIndex$: Observable<number>;
+  pageSize$: Observable<number>;
   displayedColumns = ['seqNo', 'description', 'duration'];
-  nextPage = 0;
 
   constructor(
     private coursesService: CoursesHttpService,
@@ -31,27 +37,49 @@ export class CourseComponent implements OnInit {
     const courseUrl = this.route.snapshot.paramMap.get('courseUrl');
     this.course$ = this.store.pipe(
       select(selectAllCourses),
-      map(courses => courses.find(c => c.url === courseUrl))
+      map(courses => courses.find(c => c.url === courseUrl)),
     );
-    this.lessons$ = this.store
-      .pipe(
-        select(selectAllLessons),
-        withLatestFrom(this.course$),
-        tap(([lessons, course]) => {
-          if (this.nextPage === 0) {
-            this.loadLessonsPage(course);
+    this.pageIndex$ = this.store.select(selectLessonPageIndex);
+    this.pageSize$ = this.store.select(selectLessonPageSize);
+
+    this.lessons$ = combineLatest(
+      this.pageIndex$,
+      this.store.select(selectAllLessons)
+    ).pipe(
+      withLatestFrom(this.pageSize$, this.course$),
+      map(([[pageIndex, allLessons], pageSize, course]) => {
+        const start = pageIndex * pageSize;
+        const end = start + pageSize;
+
+        const lessons = allLessons
+          .filter(lesson => lesson.courseId === course.id)
+          .slice(start, end);
+
+          if (lessons?.length < pageSize) {
+            this.store.dispatch(new LessonsPageRequested({ courseId: course.id, page: {pageIndex, pageSize} }));
           }
-        }),
-        map(([lessons, course]) => lessons.filter(l => l.courseId === course.id))
-      );
+
+          return lessons;
+      })
+    );
   }
 
-  loadLessonsPage(course: Course): void {
-    const page: PageQuery = {
-      pageIndex: this.nextPage,
-      pageSize: 3
-    };
-    this.store.dispatch(new LessonsPageRequested({ courseId: course.id, page }));
-    this.nextPage = this.nextPage + 1;
+  loadNextPage(): void {
+    this.pageIndex$
+      .pipe(take(1))
+      .subscribe(i => this.updateLessonPageIndex(i + 1));
+  }
+
+  loadPreviousPage(): void {
+    this.pageIndex$
+      .pipe(take(1))
+      .subscribe(i => {
+        const newPageIndex = i > 0 ? i - 1 : 0;
+        this.updateLessonPageIndex(newPageIndex);
+      });
+  }
+
+  updateLessonPageIndex(pageIndex: number): void {
+    this.store.dispatch(new UpdateLessonPageIndex({ pageIndex }));
   }
 }

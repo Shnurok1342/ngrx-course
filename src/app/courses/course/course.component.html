@@ -39,7 +39,12 @@
   </mat-table>
 
 
-  <button class="bottom-toolbar" mat-raised-button color="accent"
-          (click)="loadLessonsPage(course)">Load More</button>
+  <div class="lesson-pagination">
+    <button class="bottom-toolbar" mat-raised-button color="accent"
+            (click)="loadPreviousPage()"><<</button>
+    <button class="bottom-toolbar" mat-raised-button color="accent"
+            (click)="loadNextPage()">>></button>
+  </div>
+
 
 </div>

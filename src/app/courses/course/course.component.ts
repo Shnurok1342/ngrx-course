@@ -3,13 +3,13 @@ import {ActivatedRoute} from '@angular/router';
 import {Course} from '../model/course';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {Lesson} from '../model/lesson';
-import {delay, map} from 'rxjs/operators';
+import {delay, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {CoursesHttpService} from '../services/courses-http.service';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../store/reducers';
 import {
   selectAllCourses,
-  selectAllLessons, selectLessonsLoading
+  selectLessonsLoading, selectLessonsPage
 } from '../store/selectors/courses.selectors';
 import {LessonsPageRequested} from '../store/actions/course.actions';
 
@@ -41,25 +41,20 @@ export class CourseComponent implements OnInit {
     this.loading$ = this.store.select(selectLessonsLoading).pipe(delay(0));
 
     this.lessons$ = combineLatest(
-      this.course$,
-      this.store.select(selectAllLessons),
+      this.course$.pipe(map(c => c.id), distinctUntilChanged()),
       this.pageIndex$,
-      this.pageSize$,
+      this.pageSize$
     ).pipe(
-      map(([course, allLessons, pageIndex, pageSize]) => {
-        const start = pageIndex * pageSize;
-        const end = start + pageSize;
-
-        const lessons = allLessons
-          .filter(lesson => lesson.courseId === course.id)
-          .slice(start, end);
-
-          if (lessons?.length < pageSize) {
-            this.store.dispatch(new LessonsPageRequested({ courseId: course.id, page: {pageIndex, pageSize} }));
-          }
-
-          return lessons;
-      })
+      switchMap(([courseId,  pageIndex, pageSize]) =>
+        this.store.pipe(
+          select(selectLessonsPage, { courseId, page: {pageIndex, pageSize} }),
+          tap(lessons => {
+            if (lessons?.length < pageSize) {
+              this.store.dispatch(new LessonsPageRequested({ courseId, page: {pageIndex, pageSize} }));
+            }
+          })
+        )
+      )
     );
   }
 

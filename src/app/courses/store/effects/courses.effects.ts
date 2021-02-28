@@ -1,18 +1,21 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {CoursesHttpService} from '../../services/courses-http.service';
-import {concatMap, map, mergeMap} from 'rxjs/operators';
+import {catchError, concatMap, map, mergeMap} from 'rxjs/operators';
 import {
   AllCoursesLoaded,
   CourseActionTypes,
   CourseLoaded,
   CourseRequested,
   CourseSaved,
-  CourseUpdated,
+  CourseUpdated, LessonsPageCancelled,
   LessonsPageLoaded,
   LessonsPageRequested,
   LoadAllCourses
 } from '../actions/course.actions';
+import {AppState} from '../../../store/reducers';
+import {Store} from '@ngrx/store';
+import {of} from 'rxjs';
 
 @Injectable()
 export class CoursesEffects {
@@ -49,12 +52,19 @@ export class CoursesEffects {
       action.payload.courseId,
       action.payload.page.pageIndex,
       action.payload.page.pageSize
+    ).pipe(
+      catchError(() => {
+        this.store.dispatch(new LessonsPageCancelled());
+        return of([]);
+      })
     )),
-    map(lessons => new LessonsPageLoaded({lessons}))
+    map(lessons => new LessonsPageLoaded({lessons})),
+
   );
 
   constructor(
     private actions$: Actions,
+    private store: Store<AppState>,
     private coursesHttpService: CoursesHttpService
   ) {}
 }

@@ -8,18 +8,18 @@ import {MockAuthService} from '../mocks/auth.service.mock';
 import {RouterTestingModule} from '@angular/router/testing';
 import {of, throwError} from 'rxjs';
 import {userMock} from '../mocks/user.mock';
-import {AuthState} from '../store/reducers';
 import {Router} from '@angular/router';
 
-fdescribe('LoginComponent', () => {
+describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: AuthService;
-  let store: Store<AuthState>;
   let router: Router;
+  let store;
   let el: DebugElement;
 
   beforeEach(waitForAsync(() => {
+    const storeSpy = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule(({
       imports: [
         ReactiveFormsModule,
@@ -27,10 +27,7 @@ fdescribe('LoginComponent', () => {
       ],
       providers: [
         { provide: AuthService, useClass: MockAuthService },
-        {
-          provide: Store,
-          useValue: {dispatch: () => {}}
-        }
+        { provide: Store, useValue: storeSpy }
       ]
     }))
       .compileComponents()
@@ -50,22 +47,20 @@ fdescribe('LoginComponent', () => {
 
   it('should login and route to /courses page', () => {
     const loginSpy = spyOn(authService, 'login').and.returnValue(of(userMock));
-    const actionSpy = spyOn(store, 'dispatch');
     const navigate = spyOn(router, 'navigateByUrl');
     component.login();
     expect(loginSpy).toHaveBeenCalled();
-    expect(actionSpy).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalled();
     expect(navigate).toHaveBeenCalledWith('/courses');
   });
 
   it('should show alert message if login failed', () => {
     const loginSpy = spyOn(authService, 'login').and.returnValue(throwError(null));
-    const actionSpy = spyOn(store, 'dispatch');
     const navigate = spyOn(router, 'navigateByUrl');
     const alert = spyOn(window, 'alert');
     component.login();
     expect(loginSpy).toHaveBeenCalled();
-    expect(actionSpy).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
     expect(alert).toHaveBeenCalledWith('Login Failed');
   });

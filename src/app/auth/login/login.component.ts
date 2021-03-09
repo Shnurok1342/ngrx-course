@@ -14,7 +14,6 @@ import {Login} from '../store/actions/auth.actions';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
   form: FormGroup;
 
   constructor(
@@ -23,18 +22,13 @@ export class LoginComponent implements OnInit {
       private router: Router,
       private store: Store<AuthState>
   ) {
-
-      this.form = fb.group({
-          email: ['test@angular-university.io', [Validators.required]],
-          password: ['test', [Validators.required]]
-      });
-
-
+    this.form = fb.group({
+      email: ['test@angular-university.io', [Validators.required]],
+      password: ['test', [Validators.required]]
+    });
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   login() {
     const formVal = this.form.value;
@@ -50,5 +44,4 @@ export class LoginComponent implements OnInit {
         () => alert('Login Failed')
       );
   }
-
 }

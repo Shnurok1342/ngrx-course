@@ -1,6 +1,8 @@
 import {User} from '../../model/user.model';
 import {AuthActions, AuthActionTypes} from '../actions/auth.actions';
 
+export const AUTH_FEATURE_KEY = 'auth';
+
 export interface AuthState {
   user: User;
 }
@@ -8,6 +10,10 @@ export interface AuthState {
 export const initialAuthState: AuthState = {
   user: undefined
 };
+
+export interface AuthPartialState {
+  readonly [AUTH_FEATURE_KEY]: AuthState;
+}
 
 export function authReducer(
   state = initialAuthState,

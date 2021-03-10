@@ -5,7 +5,7 @@ import {AuthService} from '../auth.service';
 import {tap} from 'rxjs/operators';
 import {noop} from 'rxjs';
 import {Router} from '@angular/router';
-import { AuthState } from '../store/reducers';
+import { AuthState } from '../store/reducers/auth.reducers';
 import {Login} from '../store/actions/auth.actions';
 
 @Component({

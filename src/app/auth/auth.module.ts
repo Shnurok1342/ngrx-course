@@ -9,7 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { StoreModule } from '@ngrx/store';
 import {AuthService} from './auth.service';
 import { EffectsModule } from '@ngrx/effects';
-import {authReducer} from './store/reducers';
+import {AUTH_FEATURE_KEY, authReducer} from './store/reducers/auth.reducers';
 import {AuthGuard} from './guards/auth.guard';
 import {AuthEffects} from './store/effects/auth.effects';
 
@@ -21,7 +21,7 @@ import {AuthEffects} from './store/effects/auth.effects';
       MatInputModule,
       MatButtonModule,
       RouterModule.forChild([{path: '', component: LoginComponent}]),
-      StoreModule.forFeature('auth', authReducer),
+      StoreModule.forFeature(AUTH_FEATURE_KEY, authReducer),
       EffectsModule.forFeature([AuthEffects])
     ],
     declarations: [LoginComponent],

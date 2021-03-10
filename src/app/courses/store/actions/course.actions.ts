@@ -6,8 +6,10 @@ import {Lesson} from '../../model/lesson';
 export enum CourseActionTypes {
   CourseRequested = '[View Course Page] Course Requested',
   CourseLoaded = '[Courses API] Course Loaded',
+  CourseCancelled = '[Courses API] Course Cancelled',
   LoadAllCourses = '[Courses Home Page] Load All Courses',
   AllCoursesLoaded = '[Courses API] All Courses Loaded',
+  AllCoursesCancelled = '[Courses API] All Courses Cancelled',
   CourseUpdated = '[Edit Course Dialog] Course Updated',
   CourseSaved = '[Courses API] Course Saved',
   LessonsPageRequested = '[Course Landing Page] Lessons Page Requested',
@@ -44,6 +46,10 @@ export class CourseLoaded implements Action {
   constructor(public payload: { course: Course }) {}
 }
 
+export class CourseCancelled implements Action {
+  readonly type = CourseActionTypes.CourseCancelled;
+}
+
 export class LoadAllCourses implements Action {
   readonly type = CourseActionTypes.LoadAllCourses;
 }
@@ -51,6 +57,10 @@ export class LoadAllCourses implements Action {
 export class AllCoursesLoaded implements Action {
   readonly type = CourseActionTypes.AllCoursesLoaded;
   constructor(public payload: { courses: Course[] }) {}
+}
+
+export class AllCoursesCancelled implements Action {
+  readonly type = CourseActionTypes.AllCoursesCancelled;
 }
 
 export class CourseUpdated implements Action {
@@ -66,8 +76,10 @@ export class CourseSaved implements Action {
 export type CourseActions =
   CourseRequested
   | CourseLoaded
+  | CourseCancelled
   | LoadAllCourses
   | AllCoursesLoaded
+  | AllCoursesCancelled
   | CourseUpdated
   | CourseSaved
   | LessonsPageRequested

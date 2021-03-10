@@ -2,15 +2,21 @@ import {createEntityAdapter, EntityState} from '@ngrx/entity';
 import {compareLessons, Lesson} from '../../model/lesson';
 import {CourseActions, CourseActionTypes} from '../actions/course.actions';
 
+export const LESSONS_FEATURE_KEY = 'lessons';
+
 export interface LessonsState extends EntityState<Lesson> {
   loading: boolean;
 }
 
-export const adapter = createEntityAdapter<Lesson>({
+export interface LessonsPartialState {
+  readonly [LESSONS_FEATURE_KEY]: LessonsState;
+}
+
+export const lessonsAdapter = createEntityAdapter<Lesson>({
   sortComparer: compareLessons,
 });
 
-export const initialLessonsState = adapter.getInitialState({ pageIndex: 0, pageSize: 3, loading: false });
+export const initialLessonsState = lessonsAdapter.getInitialState({ loading: false });
 
 export function lessonsReducer(state = initialLessonsState, action: CourseActions): LessonsState {
   switch (action.type) {
@@ -18,7 +24,7 @@ export function lessonsReducer(state = initialLessonsState, action: CourseAction
       return { ...state, loading: true };
 
     case CourseActionTypes.LessonsPageLoaded:
-      return adapter.addMany(action.payload.lessons, {...state, loading: false});
+      return lessonsAdapter.addMany(action.payload.lessons, {...state, loading: false});
 
     case CourseActionTypes.LessonsPageCancelled:
       return { ...state, loading: false };
@@ -33,4 +39,4 @@ export const {
   selectEntities,
   selectIds,
   selectTotal
-} = adapter.getSelectors();
+} = lessonsAdapter.getSelectors();

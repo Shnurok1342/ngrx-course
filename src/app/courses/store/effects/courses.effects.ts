@@ -3,8 +3,9 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {CoursesHttpService} from '../../services/courses-http.service';
 import {catchError, concatMap, map, mergeMap} from 'rxjs/operators';
 import {
+  AllCoursesCancelled,
   AllCoursesLoaded,
-  CourseActionTypes,
+  CourseActionTypes, CourseCancelled,
   CourseLoaded,
   CourseRequested,
   CourseSaved,
@@ -24,15 +25,23 @@ export class CoursesEffects {
   loadCourse$ = this.actions$
     .pipe(
       ofType<CourseRequested>(CourseActionTypes.CourseRequested),
-      mergeMap(action => this.coursesHttpService.findCourseByUrl(action.payload.courseUrl)),
-      map(course => new CourseLoaded({course}))
+      mergeMap(action => this.coursesHttpService.findCourseByUrl(action.payload.courseUrl)
+        .pipe(
+          map(course => new CourseLoaded({course})),
+          catchError(() => of(new CourseCancelled()))
+        )
+      ),
     );
 
   @Effect()
   loadAllCourses$ = this.actions$.pipe(
     ofType<LoadAllCourses>(CourseActionTypes.LoadAllCourses),
-    concatMap(() => this.coursesHttpService.findAllCourses()),
-    map(courses => new AllCoursesLoaded({courses}))
+    concatMap(() => this.coursesHttpService.findAllCourses()
+      .pipe(
+        map(courses => new AllCoursesLoaded({courses})),
+        catchError(() => of(new AllCoursesCancelled()))
+      )
+    ),
   );
 
   @Effect()
@@ -41,8 +50,10 @@ export class CoursesEffects {
     concatMap(action => this.coursesHttpService.saveCourse(
       action.payload.update.id,
       action.payload.update.changes
-    )),
-    map(course => new CourseSaved({ course: { id: course.id, changes: course } }))
+    ).pipe(
+      map(course => new CourseSaved({ course: { id: course.id, changes: course } })),
+      catchError(() => of(new CourseCancelled()))
+    ))
   );
 
   @Effect()

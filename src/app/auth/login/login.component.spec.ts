@@ -4,7 +4,7 @@ import {DebugElement} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from '../auth.service';
-import {MockAuthService} from '../mocks/auth.service.mock';
+import {MockAuthService} from '../mocks/services/auth.service.mock';
 import {RouterTestingModule} from '@angular/router/testing';
 import {of, throwError} from 'rxjs';
 import {userMock} from '../mocks/user.mock';

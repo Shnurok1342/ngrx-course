@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {User} from '../model/user.model';
+import {User} from '../../model/user.model';
 
 @Injectable()
 export class MockAuthService {

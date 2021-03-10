@@ -1,17 +1,11 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {adapter, CoursesState} from '../reducers/courses.reducers';
-import {LessonsState} from '../reducers/lessons.reducers';
-import * as fromLesson from '../reducers/lessons.reducers';
-import {PageQuery} from '../actions/course.actions';
-import {Lesson} from '../../model/lesson';
+import {courseAdapter, COURSES_FEATURE_KEY, CoursesState} from '../reducers/courses.reducers';
 
-export const selectCoursesState = createFeatureSelector<CoursesState>('courses');
-
-export const selectLessonsState = createFeatureSelector<LessonsState>('lessons');
+export const selectCoursesState = createFeatureSelector<CoursesState>(COURSES_FEATURE_KEY);
 
 export const selectAllCourses = createSelector(
   selectCoursesState,
-  state => adapter.getSelectors().selectAll(state)
+  state => courseAdapter.getSelectors().selectAll(state)
 );
 
 export const selectBeginnerCourses = createSelector(
@@ -32,26 +26,4 @@ export const selectPromoTotal = createSelector(
 export const areCoursesLoaded = createSelector(
   selectCoursesState,
   state => state.allCoursesLoaded
-);
-
-export const selectLessonsLoading = createSelector(
-  selectLessonsState,
-  state => state.loading
-);
-
-export const selectAllLessons = createSelector(
-  selectLessonsState,
-  fromLesson.selectAll
-);
-
-export const selectLessonsPage = createSelector(
-  selectAllLessons,
-  (allLessons: Lesson[], props: {courseId: number, page: PageQuery}) => {
-    const start = props.page.pageIndex * props.page.pageSize;
-    const end = start + props.page.pageSize;
-
-    return allLessons
-      .filter(lesson => lesson.courseId === props.courseId)
-      .slice(start, end);
-  }
 );

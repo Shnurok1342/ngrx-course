@@ -8,10 +8,10 @@ import {CoursesHttpService} from '../services/courses-http.service';
 import {select, Store} from '@ngrx/store';
 import {AppState} from '../../store/reducers';
 import {
-  selectAllCourses,
-  selectLessonsLoading, selectLessonsPage
+  selectAllCourses
 } from '../store/selectors/courses.selectors';
 import {LessonsPageRequested} from '../store/actions/course.actions';
+import {selectLessonsLoading, selectLessonsPage} from '../store/selectors/lessons.selectors';
 
 @Component({
   selector: 'app-course',
